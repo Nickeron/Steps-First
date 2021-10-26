@@ -1,0 +1,50 @@
+.app-gradient-background { fill: fb-blue; }
+.background-fill { fill: fb-black; }
+
+text { font-family: System-Light; text-anchor: start;}
+
+#hoursText {
+  font-size: 160;
+  text-anchor: start;
+  x: 5%;
+  y: 40%;
+  fill: white;
+}
+
+#minutesText {
+  font-size: 160;
+  x: 5%;
+  y: 90%;
+  fill: white;
+}
+
+#right{
+  x: 60%;
+}
+
+#right text{
+  x: 15%;
+  y: 30;
+  font-size: 25;
+  fill: white;
+}
+
+#steps{ y: 10%;}
+
+#heartRate{ y: 30%;}
+
+#calories{ y: 60%;}
+
+#date{ y: 80%;}
+
+text#stepsText { text-length: 7;}
+
+text#totStepsText { text-length: 4; x:28%; font-size:15}
+
+text#heartRateText {text-length: 3;}
+
+text#caloriesText {text-length: 7;}
+
+text#dateText { text-length: 10; x: 0;}
+
+text#batteryText { text-length: 4;}

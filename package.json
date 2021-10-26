@@ -1,0 +1,26 @@
+{
+  "devDependencies": {
+    "@fitbit/sdk": "~6.0.0"
+  },
+  "fitbit": {
+    "appUUID": "ac2c2762-f6e0-4b88-b2c8-24827b97d5e6",
+    "appType": "clockface",
+    "appDisplayName": "Steps First",
+    "iconFile": "resources/icon.png",
+    "wipeColor": "",
+    "requestedPermissions": [
+      "access_heart_rate",
+      "access_activity"
+    ],
+    "buildTargets": [
+      "vulcan",
+      "atlas"
+    ],
+    "i18n": {
+      "en-US": {
+        "name": "Steps First"
+      }
+    },
+    "defaultLanguage": "en-US"
+  }
+}

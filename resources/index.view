@@ -1,0 +1,32 @@
+<svg class="background">
+  <use href="#app-gradient-background" class="app-gradient-background application-fill" apply-style="at-use">
+    <svg>
+      
+      <text id="hoursText" />
+      <text id="minutesText" />
+      
+      <section id="right">        
+        <section id="steps">
+          <image width="36" height="36" fill="fb-cyan" href="steps.png" />
+          <text id="stepsText"/>
+          <text id="totStepsText"/>
+        </section>
+        
+        <section id="heartRate">
+          <image width="36" height="36" fill="fb-red" href="heart_rate.png" />
+          <text id="heartRateText"/>
+        </section>
+        
+        <section id="calories">
+          <image width="36" height="36" fill="fb-peach" href="calories.png" />
+          <text id="caloriesText"/>
+        </section>
+        
+        <section id="date">
+          <text id="dateText" />
+        </section>        
+      </section>
+      
+    </svg>
+  </use>
+</svg>
