@@ -1,10 +1,9 @@
 import clock from "clock";
 import document from "document";
 import { HeartRateSensor } from "heart-rate";
-import { me as appbit } from "appbit";
-import { minuteHistory, dayHistory } from "user-activity";
 import { display } from "display";
 import { BodyPresenceSensor } from "body-presence";
+import { today as todayActivity } from 'user-activity';
 import * as util from "../common/utils";
 import * as messaging from "messaging";
 import * as fs from "fs";
@@ -15,7 +14,7 @@ const SETTINGS_FILE = "settings.cbor";
 // Update the clock every second
 clock.granularity = "seconds";
 
-const caloriesUI = document.getElementById("caloriesText");
+let hourSteps = 0;
 
 //HeartRateSensor
 if (HeartRateSensor) 
@@ -25,7 +24,8 @@ if (HeartRateSensor)
 }
 
 // Disable HRS when watch is not on wrist
-if (BodyPresenceSensor && hrs) {
+if (BodyPresenceSensor && hrs) 
+{
   const body = new BodyPresenceSensor();
   body.addEventListener("reading", () => 
   {
@@ -36,7 +36,8 @@ if (BodyPresenceSensor && hrs) {
 }
 
 // Disable HRS when screen is off
-if (display && hrs) {
+if (display && hrs) 
+{
   display.addEventListener("change", () => {
     if (hrs != null) 
     {
@@ -46,33 +47,20 @@ if (display && hrs) {
   });
 }
 
-// Get steps walked since this hour began
-function SetHourlySteps(minutes)
-{
-  if (appbit.permissions.granted("access_activity")) 
-  {
-    let stepsTillNow = 0;
-    // query the previous minutes step data
-    const minuteRecords = minuteHistory.query({ limit: minutes });
-    
-    minuteRecords.forEach((minute, index) => stepsTillNow += (minute.steps || 0));
-
-    return stepsTillNow;
-  }
-  return -1;
-}
-
-let settings = loadSettings();
-applySettings();
-
 // Update the <text> element every tick with the current time
 clock.ontick = event => 
 { 
+  // On the first second of every hour we save the past steps
+  if(event.date.getSeconds() === 0 && event.date.getMinutes() === 0)
+  {
+    saveSteps();
+  }
+  
   util.setMinutes(event.date.getMinutes());
   util.setHourFormat(event.date.getHours());
     
   // Elements on the right side
-  util.setStepsUI(SetHourlySteps(event.date.getMinutes()));
+  util.setStepsUI(loadSteps());
   setHeartRateUI();  
   util.setCalorieUI();
   util.setDateUI(event.date);
@@ -101,21 +89,21 @@ messaging.peerSocket.onmessage = (event) => {
   applySettings()
 }
 
-appbit.onunload = saveSettings;
+//appbit.onunload = saveSettings;
 
-function loadSettings() 
-  {
+function loadSteps() 
+{
   try {
     return fs.readFileSync(SETTINGS_FILE, SETTINGS_TYPE);
   } catch (ex) {
     return {
-      primaryColor: "lightcoral",
-      secondaryColor: "lightskyblue",
+      hourSteps: 0
     }
   }
 }
 
-function saveSettings() 
-  {
-  fs.writeFileSync(SETTINGS_FILE, settings, SETTINGS_TYPE);
+function saveSteps()
+{
+    hourSteps = todayActivity.adjusted.steps;
+    fs.writeFileSync(SETTINGS_FILE, hourSteps, SETTINGS_TYPE);
 }

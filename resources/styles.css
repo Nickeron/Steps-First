@@ -1,50 +1,45 @@
-.app-gradient-background { fill: fb-blue; }
-.background-fill { fill: fb-black; }
-
-text { font-family: System-Light; text-anchor: start;}
-
-#hoursText {
-  font-size: 160;
+#left text{ 
+  font-family: System-Bold; 
   text-anchor: start;
-  x: 5%;
-  y: 40%;
+  font-size: 150;
+  x: 2%;
   fill: white;
 }
 
-#minutesText {
-  font-size: 160;
-  x: 5%;
-  y: 90%;
-  fill: white;
-}
+#hoursText { y: 42%; }
 
-#right{
-  x: 60%;
-}
+#minutesText { y: 85%; }
+
+#right{ x: 55%; }
+
+#steps{ y: 12%;}
+
+#heartRate{ y: 33%;}
+
+#calories{ y: 55%;}
+
+#date{ y: 75%;}
 
 #right text{
-  x: 15%;
+  x: 13%;
   y: 30;
-  font-size: 25;
+  font-size: 30;
+  font-family: System-Regular; 
   fill: white;
 }
-
-#steps{ y: 10%;}
-
-#heartRate{ y: 30%;}
-
-#calories{ y: 60%;}
-
-#date{ y: 80%;}
 
 text#stepsText { text-length: 7;}
 
-text#totStepsText { text-length: 4; x:28%; font-size:15}
+text#totStepsText{ text-length: 4; x:29%; font-size:20; font-family: System-Light;}
 
-text#heartRateText {text-length: 3;}
+text#heartRateText{text-length: 3;}
 
-text#caloriesText {text-length: 7;}
+text#caloriesText{text-length: 7;}
 
-text#dateText { text-length: 10; x: 0;}
+text#dateText{ 
+  text-length: 9; 
+  x: 0; 
+  font-size: 28;
+  font-family: System-Light;}
 
-text#batteryText { text-length: 4;}
+text#batteryText{ text-length: 4;}

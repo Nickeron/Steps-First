@@ -1,7 +1,7 @@
 import { today as todayActivity } from 'user-activity';
-import { preferences } from "user-settings";
-import { locale } from "user-settings";
+import { locale, preferences } from "user-settings";
 import { battery } from "power";
+import { localStorage } from "local-storage";
 import document from "document";
 
 // Add zero in front of numbers < 10
@@ -9,7 +9,6 @@ export function zeroPad(i) {
   return (i < 10) ? "0" + i : i;
 }
 
-//https://dev.fitbit.com/build/guides/user-interface/css/
 //Convert a number to a special monospace number
 export function monoDigits(num, pad = true) 
 {
@@ -74,57 +73,75 @@ function monoDigit(digit)
 }
 
 const weekDaysEnglish = ["Sun","Mon", "Tue", "Wed", "Thu","Fri","Sat"];
+const weekDaysGreek = ["Κυρ","Δευ", "Τρί", "Τετ", "Πέμ","Παρ","Σάβ"];
 const weekDaysDutch = ["Zon", "Maa", "Din", "Woe", "Don", "Vri", "Zat"];
+const weekDaysFrench = ["Dim","Lun", "Mar","Mer","Jeu","Ven","Sam"];
+const weekDaysItalian = ["Dom", "Lun", "Mar","Mer","Gio","Ven","Sab"];
+const weekDaysSpanish = ["Dom", "Lun", "Mar","Mié","Jue","Vie","Sáb"];
 const weekDaysGerman = ["So", "Mo","Di","Mi","Do","Fr","Sa"];
 
 export function getWeekDay(i, locale)
 {
   switch(locale.language)
   {
+    case "gr-gr": return weekDaysGreek[i];
+    case "es-es": return weekDaysSpanish[i];
+    case "fr-fr": return weekDaysFrench[i];
+    case "it-it": return weekDaysItalian[i];
     case "de-de": return weekDaysGerman[i];
     case "nl-nl": return weekDaysDutch[i];
     default: return weekDaysEnglish[i];
   }
 }
 
-export function setStepsUI(stepsSoFar)
+function setCommaOnThousands(number)
 {
-  let stepsString = "";
-  
-  if(stepsSoFar >= 250 || stepsSoFar === -1) 
+  let numString = "";
+  if(number > 1000)
   {
-	  if (todayActivity.adjusted != null)
-	  {
-	  let steps = todayActivity.adjusted.steps;
-	  
-	  if (steps > 1000) 
-	  {
-		  let thousands = Math.floor(steps / 1000);
-		  stepsString += thousands;
-		  stepsString += ",";
-		  steps = steps - 1000 * thousands;
-		  if (steps < 10) 
-		  {
-			  stepsString += "0";
-		  }
-		  if (steps < 100) 
-		  {
-			  stepsString += "0";
-		  }
-	  }
-	  stepsString += steps;
-	  document.getElementById("stepsText").text = stepsString;
+    let thousands = Math.floor(number / 1000);
+    numString += thousands;
+    numString += ",";
+    number = number - 1000 * thousands;
+    if (number < 10)
+    {
+      numString += "0";
+    }
+    if (number < 100)
+    {
+      numString += "0";
+    }
   }
-  else
-  {
-	  document.getElementById("stepsText").text = "--";
-  }
-  
-}else{
-  document.getElementById("stepsText").text = stepsSoFar;
-  document.getElementById("totStepsText").text = "/250";
+  numString += number;
+  return numString;
 }
-	
+
+export function setStepsUI(hourSteps)
+{
+  
+  let stepsTillThisHour = hourSteps;
+  
+  document.getElementById("totStepsText").text = "";
+  
+  if (todayActivity.adjusted != null)
+	  {      
+      let steps = todayActivity.adjusted.steps;
+      
+      if(steps - stepsTillThisHour < 250)      
+      {
+        document.getElementById("stepsText").text = steps - stepsTillThisHour;
+        document.getElementById("totStepsText").text = "/250";
+      }
+      else
+      {
+        
+        document.getElementById("stepsText").text = setCommaOnThousands(steps);
+      }      
+    }
+    else
+    {
+      document.getElementById("stepsText").text = "--";
+    }
 }
 
 export function setMinutes(minutes)
@@ -140,7 +157,7 @@ export function setHourFormat(hours)
 
 export function setCalorieUI()
 {
-	document.getElementById("caloriesText").text = monoDigits(todayActivity.adjusted.calories);
+	document.getElementById("caloriesText").text = setCommaOnThousands(todayActivity.adjusted.calories);
 }
 
 export function setDateUI(today)

@@ -10,7 +10,8 @@
     "wipeColor": "",
     "requestedPermissions": [
       "access_heart_rate",
-      "access_activity"
+      "access_activity",
+      "run_background"
     ],
     "buildTargets": [
       "vulcan",
@@ -19,6 +20,21 @@
     "i18n": {
       "en-US": {
         "name": "Steps First"
+      },
+      "nl-NL": {
+        "name": "Stappen Eerst "
+      },
+      "de-DE": {
+        "name": "Schritte Zuerst"
+      },
+      "es-ES": {
+        "name": "Pasos Primero"
+      },
+      "fr-FR": {
+        "name": "Étapes d'Abord"
+      },
+      "it-IT": {
+        "name": "Passi Prima"
       }
     },
     "defaultLanguage": "en-US"
