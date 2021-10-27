@@ -28,9 +28,17 @@
   fill: white;
 }
 
-text#stepsText { text-length: 7;}
+text#stepsText 
+{ 
+  text-length: 7;
+}
 
-text#totStepsText{ text-length: 4; x:29%; font-size:20; font-family: System-Light;}
+text#totStepsText
+{
+  text-length: 4;
+  font-size:20; 
+  font-family: System-Light;
+}
 
 text#heartRateText{text-length: 3;}
 

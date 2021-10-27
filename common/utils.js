@@ -127,7 +127,12 @@ export function setStepsUI()
   
   let stepsTillThisHour = loadSteps();
   
-  document.getElementById("totStepsText").text = "";
+  const totSteps = document.getElementById("totStepsText");
+  const cSteps = document.getElementById("stepsText");
+  
+  totSteps.text = "";
+  
+  
   
   if (todayActivity.adjusted != null)
   {
@@ -135,17 +140,22 @@ export function setStepsUI()
     
     if(steps - stepsTillThisHour.hourSteps < 250)
     {
-      document.getElementById("stepsText").text = steps - stepsTillThisHour.hourSteps;
-      document.getElementById("totStepsText").text = "/250";
+      cSteps.text = steps - stepsTillThisHour.hourSteps;
+      totSteps.text = "/250";
+      
+      // We set the position of the divider "/250", right 
+      // after the bounding box of the steps counter.
+      const ltbox = cSteps.getBBox();
+      totSteps.x =ltbox.width + 45;
     }
     else
     {
-      document.getElementById("stepsText").text = setCommaOnThousands(steps);
+      cSteps.text = setCommaOnThousands(steps);
     }
   }
   else
   {
-    document.getElementById("stepsText").text = "--";
+    cSteps.text = "--";
   }
 }
 

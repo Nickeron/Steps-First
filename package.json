@@ -10,8 +10,7 @@
     "wipeColor": "",
     "requestedPermissions": [
       "access_heart_rate",
-      "access_activity",
-      "run_background"
+      "access_activity"
     ],
     "buildTargets": [
       "vulcan",
