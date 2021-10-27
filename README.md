@@ -8,6 +8,8 @@ As per the image, the steps counter on the upper-right; changes to steps/250, wh
 This is to help the user know if they have to walk more, by looking directly at the clockface, without the need to search anywhere else.
 If the divider is not apparent, it means that the user has already walked more than 250 steps in the last hour, and the total number of steps for the day is visible.
 
+Can be downloaded from [Fitbit App Gallery](https://gallery.fitbit.com/details/ac2c2762-f6e0-4b88-b2c8-24827b97d5e6)
+
 Languages supported: English, French, Spanish, Italian, Dutch, German
 
 Fitbit SDK: 6.0
