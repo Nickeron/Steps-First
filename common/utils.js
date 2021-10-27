@@ -1,7 +1,8 @@
-import { today as todayActivity } from 'user-activity';
+import { minuteHistory, today as todayActivity } from 'user-activity';
 import { locale, preferences } from "user-settings";
 import { battery } from "power";
 import { localStorage } from "local-storage";
+import * as fs from "fs";
 import document from "document";
 
 // Add zero in front of numbers < 10
@@ -43,6 +44,11 @@ const c6 = String.fromCharCode(0x16);
 const c7 = String.fromCharCode(0x17);
 const c8 = String.fromCharCode(0x18);
 const c9 = String.fromCharCode(0x19);
+
+const FILE_TYPE = "cbor";
+const SETTINGS_FILE = "settings.cbor";
+
+let hourSteps = 0;
 
 function monoDigit(digit) 
 {
@@ -116,32 +122,58 @@ function setCommaOnThousands(number)
   return numString;
 }
 
-export function setStepsUI(hourSteps)
+export function setStepsUI()
 {
   
-  let stepsTillThisHour = hourSteps;
+  let stepsTillThisHour = loadSteps();
   
   document.getElementById("totStepsText").text = "";
   
   if (todayActivity.adjusted != null)
-	  {      
-      let steps = todayActivity.adjusted.steps;
-      
-      if(steps - stepsTillThisHour < 250)      
-      {
-        document.getElementById("stepsText").text = steps - stepsTillThisHour;
-        document.getElementById("totStepsText").text = "/250";
-      }
-      else
-      {
-        
-        document.getElementById("stepsText").text = setCommaOnThousands(steps);
-      }      
+  {
+    let steps = todayActivity.adjusted.steps;
+    
+    if(steps - stepsTillThisHour.hourSteps < 250)
+    {
+      document.getElementById("stepsText").text = steps - stepsTillThisHour.hourSteps;
+      document.getElementById("totStepsText").text = "/250";
     }
     else
     {
-      document.getElementById("stepsText").text = "--";
+      document.getElementById("stepsText").text = setCommaOnThousands(steps);
     }
+  }
+  else
+  {
+    document.getElementById("stepsText").text = "--";
+  }
+}
+
+export function loadSteps() 
+{
+  try {
+    return fs.readFileSync(SETTINGS_FILE, FILE_TYPE);
+  } catch (ex) {
+    return {
+      hourSteps: 0,
+      hourSave: -1
+    }
+  }
+}
+
+export function saveSteps(currentHour, minutes = 0)
+{
+  let stepsSoFar = todayActivity.adjusted.steps;
+  if(minutes > 0) 
+  {     
+    const minuteRecords = minuteHistory.query({ limit: minutes });
+    minuteRecords.forEach((minute, index) => stepsSoFar -= (minute.steps || 0));
+  }
+  fs.writeFileSync(SETTINGS_FILE, 
+                   {
+    hourSteps: stepsSoFar,
+    hourSave: currentHour
+  }, FILE_TYPE);
 }
 
 export function setMinutes(minutes)
@@ -152,7 +184,7 @@ export function setMinutes(minutes)
 export function setHourFormat(hours)
 {
 	// 12h vs 24h format
-	document.getElementById("hoursText").text =  monoDigits(preferences.clockDisplay === "12h" ? hours % 12 : hours);
+	document.getElementById("hoursText").text =  monoDigits(preferences.clockDisplay === "12h" ? hours % 12 || 12 : hours);
 }
 
 export function setCalorieUI()

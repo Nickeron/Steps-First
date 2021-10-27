@@ -3,18 +3,11 @@ import document from "document";
 import { HeartRateSensor } from "heart-rate";
 import { display } from "display";
 import { BodyPresenceSensor } from "body-presence";
-import { today as todayActivity } from 'user-activity';
 import * as util from "../common/utils";
-import * as messaging from "messaging";
-import * as fs from "fs";
-
-const SETTINGS_TYPE = "cbor";
-const SETTINGS_FILE = "settings.cbor";
 
 // Update the clock every second
 clock.granularity = "seconds";
-
-let hourSteps = 0;
+let lastSaveHour;
 
 //HeartRateSensor
 if (HeartRateSensor) 
@@ -39,7 +32,7 @@ if (BodyPresenceSensor && hrs)
 if (display && hrs) 
 {
   display.addEventListener("change", () => {
-    if (hrs != null) 
+    if (hrs != null)
     {
       if (display.on) hrs.start();
       else hrs.stop();
@@ -49,18 +42,30 @@ if (display && hrs)
 
 // Update the <text> element every tick with the current time
 clock.ontick = event => 
-{ 
+{
+  lastSaveHour = util.loadSteps().hourSave;
+  
   // On the first second of every hour we save the past steps
   if(event.date.getSeconds() === 0 && event.date.getMinutes() === 0)
   {
-    saveSteps();
+    lastSaveHour = event.date.getHours();
+    util.saveSteps(lastSaveHour);
   }
+  // Or if we miss that chance, we save on the first chance we get.
+  else if(lastSaveHour !== event.date.getHours())
+  {
+    lastSaveHour = event.date.getHours();
+    util.saveSteps(lastSaveHour, event.date.getMinutes());
+  }
+  
+  // For debugging purposes
+  //console.log(`"Last save: ${util.loadSteps().hourSteps} steps, at: ${util.loadSteps().hourSave}`);
   
   util.setMinutes(event.date.getMinutes());
   util.setHourFormat(event.date.getHours());
     
   // Elements on the right side
-  util.setStepsUI(loadSteps());
+  util.setStepsUI();
   setHeartRateUI();  
   util.setCalorieUI();
   util.setDateUI(event.date);
@@ -70,40 +75,4 @@ clock.ontick = event =>
 function setHeartRateUI()
 {
 	document.getElementById("heartRateText").text = hrs.heartRate == null? "--" : hrs.heartRate;
-}
-
-//Settings
-
-function applySettings() 
-{
-  //hoursText.style.fill = settings.primaryColor;
-  //minutesText.style.fill = settings.secondaryColor;
-}
-
-messaging.peerSocket.onmessage = (event) => {
-  if (event.data.key == "primaryColor") {
-    settings.primaryColor = event.data.value;
-  } else if (event.data.key == "secondaryColor") {
-    settings.secondaryColor = event.data.value;
-  }
-  applySettings()
-}
-
-//appbit.onunload = saveSettings;
-
-function loadSteps() 
-{
-  try {
-    return fs.readFileSync(SETTINGS_FILE, SETTINGS_TYPE);
-  } catch (ex) {
-    return {
-      hourSteps: 0
-    }
-  }
-}
-
-function saveSteps()
-{
-    hourSteps = todayActivity.adjusted.steps;
-    fs.writeFileSync(SETTINGS_FILE, hourSteps, SETTINGS_TYPE);
 }
