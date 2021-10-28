@@ -44,10 +44,19 @@ text#heartRateText{text-length: 3;}
 
 text#caloriesText{text-length: 7;}
 
-text#dateText{ 
+text#dateText
+{ 
   text-length: 9; 
   x: 0; 
   font-size: 28;
-  font-family: System-Light;}
+  font-family: System-Light;
+}
 
-text#batteryText{ text-length: 4;}
+text#batteryText
+{ 
+  text-length: 4;
+  font-size: 15;
+  x: 50%;
+  y: 100%;
+  fill: white;
+}

@@ -215,11 +215,23 @@ export function setDateUI(today)
 
 export function setBatteryUI()
 {
-  if(document.getElementById("batteryText") !== null)
+  const batteryText = document.getElementById("batteryText");
+  const batteryColor = document.getElementById("batteryColor");
+  if(batteryText !== null)
   {
-    document.getElementById("batteryText").text = battery.chargeLevel + "%";
+    if(battery.chargeLevel < 85)
+    {
+      batteryText.text = battery.chargeLevel;
+      batteryText.style.opacity = 1; 
+      batteryColor.style.opacity = 0.2; 
+      batteryColor.style.fill = battery.chargeLevel >= 60? "limegreen" :
+                              battery.chargeLevel >= 30? "gold" : "firebrick";
+    }
+    else
+    {
+      batteryText.style.opacity = 0;
+      batteryColor.style.opacity = 0; 
+    }
     
-    batteryText.style.fill = (battery.chargeLevel >= 75)? "limegreen" :
-                       (battery.chargeLevel >= 35)? "gold" : "firebrick";
   }
 }
