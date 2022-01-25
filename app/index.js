@@ -4,6 +4,7 @@ import { HeartRateSensor } from "heart-rate";
 import { display } from "display";
 import { BodyPresenceSensor } from "body-presence";
 import * as util from "../common/utils";
+import * as simpleSettings from "../common/device-settings";
 
 // Update the clock every second
 clock.granularity = "seconds";
@@ -45,20 +46,12 @@ clock.ontick = event =>
 {
   lastSaveHour = util.loadSteps().hourSave;
   
-  // On the first second of every hour we save the past steps
-  if(event.date.getSeconds() === 0 && event.date.getMinutes() === 0)
-  {
-    lastSaveHour = event.date.getHours();
-    util.saveSteps(lastSaveHour);
-  }
-  // Or if we miss that chance, we save on the first chance we get.
-  else if(lastSaveHour !== event.date.getHours())
+  if(lastSaveHour !== event.date.getHours())
   {
     lastSaveHour = event.date.getHours();
     util.saveSteps(lastSaveHour, event.date.getMinutes());
   }
   
-  // For debugging purposes
   //console.log(`"Last save: ${util.loadSteps().hourSteps} steps, at: ${util.loadSteps().hourSave}`);
   
   util.setMinutes(event.date.getMinutes());
@@ -76,3 +69,13 @@ function setHeartRateUI()
 {
 	document.getElementById("heartRateText").text = hrs.heartRate == null? "--" : hrs.heartRate;
 }
+
+
+/* -------- SETTINGS -------- */
+function settingsCallback(data) 
+{
+  if (!data) return;
+  
+  document.getElementById("backgroundImage").style.fill = data.imageBackground ? "#FFFFFF" : "#000000";
+}
+simpleSettings.initialize(settingsCallback);

@@ -1,5 +1,5 @@
 <svg class="background" viewport-fill="black">
-  <image href="fitbitBG.png" fill="white"/>
+  <image id="backgroundImage" href="fitbitBG.png" fill="white"/>
   
   <section id="left">
     <text id="hoursText" />

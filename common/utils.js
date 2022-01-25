@@ -123,8 +123,7 @@ function setCommaOnThousands(number)
 }
 
 export function setStepsUI()
-{
-  
+{  
   let stepsTillThisHour = loadSteps();
   
   const totSteps = document.getElementById("totStepsText");
@@ -137,16 +136,17 @@ export function setStepsUI()
   if (todayActivity.adjusted != null)
   {
     let steps = todayActivity.adjusted.steps;
+    let currentSteps = steps - stepsTillThisHour.hourSteps;
     
-    if(steps - stepsTillThisHour.hourSteps < 250)
+    if(currentSteps < 250 && currentSteps >= 0)
     {
-      cSteps.text = steps - stepsTillThisHour.hourSteps;
+      cSteps.text = currentSteps;
       totSteps.text = "/250";
       
       // We set the position of the divider "/250", right 
       // after the bounding box of the steps counter.
       const ltbox = cSteps.getBBox();
-      totSteps.x =ltbox.width + 45;
+      totSteps.x = ltbox.width + 45;
     }
     else
     {
@@ -219,13 +219,13 @@ export function setBatteryUI()
   const batteryColor = document.getElementById("batteryColor");
   if(batteryText !== null)
   {
-    if(battery.chargeLevel < 85)
+    if(battery.chargeLevel < 100)
     {
       batteryText.text = battery.chargeLevel;
       batteryText.style.opacity = 1; 
       batteryColor.style.opacity = 0.2; 
       batteryColor.style.fill = battery.chargeLevel >= 60? "limegreen" :
-                              battery.chargeLevel >= 30? "gold" : "firebrick";
+                              battery.chargeLevel >= 25? "gold" : "firebrick";
     }
     else
     {
